@@ -1,10 +1,9 @@
-import sys 
-
-sys.path.append('/usr/local/lib/python3.11/dist-packages')
+# !!! not functional !!!
 
 import time
-from Raspbot_Lib import Raspbot
-bot = Raspbot()
+import Robot
+
+bot = Robot()
 speed = 20  # Keep this constant for all tests
 # duration = 3.0 # Seconds
 
@@ -13,12 +12,6 @@ m0_weight = 1.3
 m1_weight = 1.0 
 m2_weight = 1.0
 m3_weight = 1.0
-
-def stop_motors():
-    bot.Ctrl_Muto(0, 0)
-    bot.Ctrl_Muto(1, 0)
-    bot.Ctrl_Muto(2, 0)
-    bot.Ctrl_Muto(3, 0)
 
 def drive(speed_vel):
     # Drive forward
@@ -59,10 +52,10 @@ def turn_right_in_place(degree):
 
 bot.Ctrl_Muto(0, 127)
 time.sleep(2)
-stop_motors()
+bot.stop_motors()
 
 
 # time.sleep(1.5)
 # drive(-speed)
 # time.sleep(1)
-# stop_motors()
+# f.stop_motors(bot)
