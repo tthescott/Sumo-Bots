@@ -1,14 +1,18 @@
-import sys
+import sys 
 
 sys.path.append('/usr/local/lib/python3.11/dist-packages')
 
 import time
 from Raspbot_Lib import Raspbot
 bot = Raspbot()
-speed = 10  # Keep this constant for all tests
+speed = 20  # Keep this constant for all tests
 # duration = 3.0 # Seconds
 
-# print(f"Starting calibration: {speed} speed for {duration} seconds...")
+# wheel weights
+m0_weight = 1.3
+m1_weight = 1.0 
+m2_weight = 1.0
+m3_weight = 1.0
 
 def stop_motors():
     bot.Ctrl_Muto(0, 0)
@@ -18,10 +22,10 @@ def stop_motors():
 
 def drive(speed_vel):
     # Drive forward
-    bot.Ctrl_Muto(0, speed_vel)
-    bot.Ctrl_Muto(1, speed_vel)
-    bot.Ctrl_Muto(2, speed_vel)
-    bot.Ctrl_Muto(3, speed_vel)
+    bot.Ctrl_Muto(0, int(speed_vel * m0_weight))
+    bot.Ctrl_Muto(1, int(speed_vel * m1_weight))
+    bot.Ctrl_Muto(2, int(speed_vel * m2_weight))
+    bot.Ctrl_Muto(3, int(speed_vel * m3_weight))
 
 
 # black = 0
@@ -43,16 +47,21 @@ def drive(speed_vel):
 
 
 def turn_right_in_place(degree):
-    speed = 10
+    speed = 20
     bot.Ctrl_Muto(0, speed)
-    bot.Ctrl_Muto(1, speed*1.2)
+    bot.Ctrl_Muto(1, speed)
     bot.Ctrl_Muto(2, -speed)
     bot.Ctrl_Muto(3, -speed)
 
     time.sleep(4.35 * degree / 360)
 
-turn_right_in_place(180)
+# turn_right_in_place(360)
+
+bot.Ctrl_Muto(0, 127)
+time.sleep(2)
 stop_motors()
+
+
 # time.sleep(1.5)
 # drive(-speed)
 # time.sleep(1)
