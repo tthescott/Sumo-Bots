@@ -2,6 +2,7 @@
 # then turns around and repeats
 
 import signal
+import random
 from robot_controller import Robot
 
 # initiate robot object
@@ -30,9 +31,12 @@ try:
 
     # measure distance continuously
     if bot.get_distance() <= stop_distance:
-      # stop and turn away
+      # stop and turn left or right
       bot.stop_motors()
-      bot.turn_right(speed, turn_duration)
+      if random.randint(0, 1) == 0:
+        bot.turn_right(speed, turn_duration)
+      else:
+        bot.turn_left(speed, turn_duration)
 
 finally:
   # stop motors and ultrasonic
