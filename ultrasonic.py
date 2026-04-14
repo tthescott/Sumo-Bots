@@ -1,7 +1,6 @@
 # bot drives forward until it gets close to something,
 # then turns around and repeats
 
-import time
 import signal
 from robot_controller import Robot
 
