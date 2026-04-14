@@ -1,7 +1,7 @@
 # !!! not functional !!!
 
 import time
-from Robot import Robot
+from robot_controller import Robot
 
 bot = Robot()
 speed = 20  # Keep this constant for all tests
@@ -9,7 +9,7 @@ speed = 20  # Keep this constant for all tests
 
 # wheel weights
 m0_weight = 1.3
-m1_weight = 1.0 
+m1_weight = 1.0
 m2_weight = 1.0
 m3_weight = 1.0
 

@@ -1,4 +1,4 @@
-from Robot import Robot
+from robot_controller import Robot
 
 bot = Robot()
 speed = 80  # Keep this constant for all tests

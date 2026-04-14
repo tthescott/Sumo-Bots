@@ -3,7 +3,7 @@
 
 import time
 import signal
-from Robot import Robot
+from robot_controller import Robot
 
 # initiate robot object
 bot = Robot()

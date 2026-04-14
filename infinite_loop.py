@@ -1,6 +1,6 @@
 # !!! not functional !!!
 
-from Robot import Robot
+from robot_controller import Robot
 
 bot = Robot()
 speed = 80
