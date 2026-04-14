@@ -1,7 +1,7 @@
 # !!! not functional !!!
 
 import time
-import Robot
+from Robot import Robot
 
 bot = Robot()
 speed = 20  # Keep this constant for all tests

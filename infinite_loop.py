@@ -1,6 +1,6 @@
 # !!! not functional !!!
 
-import Robot
+from Robot import Robot
 
 bot = Robot()
 speed = 80

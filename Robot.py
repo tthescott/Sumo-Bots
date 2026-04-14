@@ -1,4 +1,4 @@
-import sys 
+import sys
 import time
 
 # tell python where Raspbot_Lib is
@@ -7,46 +7,82 @@ from Raspbot_Lib import Raspbot
 
 class Robot():
 
+  # initialize raspbot object
   def __init__(self):
     self.raspbot = Raspbot()
   
   #------------- movement -------------
 
-  def drive_forward(self, speed):
+  # drive forward with no stop
+  def drive_forward_forever(self, speed):
     self.raspbot.Ctrl_Muto(0, speed)
     self.raspbot.Ctrl_Muto(1, speed)
     self.raspbot.Ctrl_Muto(2, speed)
     self.raspbot.Ctrl_Muto(3, speed)
-    print("driving forward")
 
+  # drive backward with no stop
+  def drive_backward_forever(self, speed):
+    self.raspbot.Ctrl_Muto(0, -speed)
+    self.raspbot.Ctrl_Muto(1, -speed)
+    self.raspbot.Ctrl_Muto(2, -speed)
+    self.raspbot.Ctrl_Muto(3, -speed)
+
+  # drive forward for a duration of time
+  def drive_forward_timed(self, speed, duration):
+    self.raspbot.Ctrl_Muto(0, speed)
+    self.raspbot.Ctrl_Muto(1, speed)
+    self.raspbot.Ctrl_Muto(2, speed)
+    self.raspbot.Ctrl_Muto(3, speed)
+    time.sleep(duration)
+    self.stop_motors()
+  
+  # drive backward for a duration of time
+  def drive_backward_timed(self, speed, duration):
+    self.raspbot.Ctrl_Muto(0, -speed)
+    self.raspbot.Ctrl_Muto(1, -speed)
+    self.raspbot.Ctrl_Muto(2, -speed)
+    self.raspbot.Ctrl_Muto(3, -speed)
+    time.sleep(duration)
+    self.stop_motors()
+
+  # stop all wheel motors
   def stop_motors(self):
     self.raspbot.Ctrl_Muto(0, 0)
     self.raspbot.Ctrl_Muto(1, 0)
     self.raspbot.Ctrl_Muto(2, 0)
     self.raspbot.Ctrl_Muto(3, 0)
-    print("stopped motors")
 
-  def turn(self, speed, duration):
+  # turn right for a duration of time
+  def turn_right(self, speed, duration):
     self.raspbot.Ctrl_Muto(0, speed)
     self.raspbot.Ctrl_Muto(1, speed)
     self.raspbot.Ctrl_Muto(2, -speed)
     self.raspbot.Ctrl_Muto(3, -speed)
     time.sleep(duration)
     self.stop_motors()
-    print(f"turned at {speed} speed for {duration} seconds")
+
+  # turn left for a duration of time
+  def turn_left(self, speed, duration):
+    self.raspbot.Ctrl_Muto(0, -speed)
+    self.raspbot.Ctrl_Muto(1, -speed)
+    self.raspbot.Ctrl_Muto(2, speed)
+    self.raspbot.Ctrl_Muto(3, speed)
+    time.sleep(duration)
+    self.stop_motors()
 
   #------------- ultrasonic -------------
 
+  # activate ultrasonic sensor
   def sonic_up(self):
-    # set up ultra sonic sensor
     self.raspbot.Ctrl_Ulatist_Switch(1)
-    print("sonic up")
+    # give time to calibrate
+    time.sleep(1)
 
+  # deactivate ultrasonic sensor
   def sonic_down(self):
-    # shut down ultra sonic sensor
     self.raspbot.Ctrl_Ulatist_Switch(0)
-    print("sonic down")
 
+  # measure distance in mm with ultrasonic sensor
   def get_distance(self):
     diss_H = self.raspbot.read_data_array(0x1b,1)[0]
     diss_L = self.raspbot.read_data_array(0x1a,1)[0]

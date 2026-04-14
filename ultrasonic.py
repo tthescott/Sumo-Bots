@@ -1,20 +1,41 @@
-import Robot
+# bot drives forward until it gets close to something,
+# then turns around and repeats
 
+import time
+import signal
+from Robot import Robot
+
+# initiate robot object
 bot = Robot()
 bot.sonic_up()
 
-speed = 60
-stop_distance = 200 # mm
-duration = 0.9 # seconds
+# global variables
+run = True
+speed = 100
+stop_distance = 300 # mm
+turn_duration = 0.3 # seconds
 
+# handles stopping the program
+def stop_execution(sig, frame):
+  global run
+  print("\nRun stop.py if the robot didn't stop")
+  run = False
+
+# invoke stop_execution on Ctrl+C (SIGINT)
+signal.signal(signal.SIGINT, stop_execution)
+
+# main loop
 try:
-    while True:
-        bot.drive_forward(speed)
+  while run:
+    bot.drive_forward_forever(speed)
 
-        if bot.get_distance() <= stop_distance:
-            bot.stop_motors()
-            bot.turn(speed, duration)
+    # measure distance continuously
+    if bot.get_distance() <= stop_distance:
+      # stop and turn away
+      bot.stop_motors()
+      bot.turn_right(speed, turn_duration)
 
-except KeyboardInterrupt:
-    bot.stop_motors()
-    bot.sonic_down()
+finally:
+  # stop motors and ultrasonic
+  bot.stop_motors()
+  bot.sonic_down()
