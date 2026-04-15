@@ -1,8 +1,10 @@
+# drive forward until it hits a black line, then stop
+
 import time
 import signal
 from robot_controller import Robot
 
-# set up bot and Ctrl+C to stop main loop
+# set up robot and execution loop stop
 bot = Robot()
 signal.signal(signal.SIGINT, bot.stop_execution)
 
@@ -13,9 +15,8 @@ speed = 30
 try:
   bot.drive_forward_forever(speed)
   while bot.is_running():
+    # read light sensors every .05 seconds
     time.sleep(.05)
-
-    # read all four light sensors
     track = bot.read_data_array()
     track = int(track[0])
     x1 = (track>>3)&0x01

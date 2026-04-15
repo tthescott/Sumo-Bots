@@ -51,9 +51,10 @@ class Robot():
   
   # ------------- execution -------------
   
-  def stop_execution(self):
+  def stop_execution(self, sig, frame):
     """stops any execution loop contingent on bot.is_running()"""
     self.run = False
+    print() # for terminal formatting
 
   def is_running(self):
     return self.run
