@@ -47,6 +47,16 @@ class Robot():
   def __init__(self):
     """initialize raspbot object"""
     self.raspbot = Raspbot()
+    self.run = True
+  
+  # ------------- execution -------------
+  
+  def stop_execution(self):
+    """stops any execution loop contingent on bot.is_running()"""
+    self.run = False
+
+  def is_running(self):
+    return self.run
 
   # ------------- movement -------------
 
@@ -134,7 +144,7 @@ class Robot():
     dis = diss_H<< 8 | diss_L
     return dis
 
-  # ------------- line sensor -------------
+  # ------------- light sensor -------------
 
   def read_data_array(self):
     return self.raspbot.read_data_array(0x0a, 1)
