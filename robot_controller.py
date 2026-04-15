@@ -45,38 +45,39 @@ def turn_time(speed, angle=90):
 class Robot():
 
   def __init__(self):
-    """initialize raspbot object"""
+    """Initialize raspbot object and set Robot.run = True"""
     self.raspbot = Raspbot()
     self.run = True
   
   # ------------- execution -------------
   
   def stop_execution(self, sig, frame):
-    """stops any execution loop contingent on bot.is_running()"""
+    """Set Robot.run = False. Stop any execution loop contingent on bot.is_running()"""
     self.run = False
     print() # for terminal formatting
 
   def is_running(self):
+    """Return the value of Robot.run (initialized True)"""
     return self.run
 
   # ------------- movement -------------
 
   def drive_forward_forever(self, speed):
-    """drive forward with no stop"""
+    """Drive forward with no stop"""
     self.raspbot.Ctrl_Muto(0, speed)
     self.raspbot.Ctrl_Muto(1, speed)
     self.raspbot.Ctrl_Muto(2, speed)
     self.raspbot.Ctrl_Muto(3, speed)
 
   def drive_backward_forever(self, speed):
-    """drive backward with no stop"""
+    """Drive backward with no stop"""
     self.raspbot.Ctrl_Muto(0, -speed)
     self.raspbot.Ctrl_Muto(1, -speed)
     self.raspbot.Ctrl_Muto(2, -speed)
     self.raspbot.Ctrl_Muto(3, -speed)
 
   def drive_forward_timed(self, speed, duration):
-    """drive forward for a duration of time"""
+    """Drive forward for a duration of time"""
     self.raspbot.Ctrl_Muto(0, speed)
     self.raspbot.Ctrl_Muto(1, speed)
     self.raspbot.Ctrl_Muto(2, speed)
@@ -85,7 +86,7 @@ class Robot():
     self.stop_motors()
 
   def drive_backward_timed(self, speed, duration):
-    """drive backward for a duration of time"""
+    """Drive backward for a duration of time"""
     self.raspbot.Ctrl_Muto(0, -speed)
     self.raspbot.Ctrl_Muto(1, -speed)
     self.raspbot.Ctrl_Muto(2, -speed)
@@ -94,14 +95,14 @@ class Robot():
     self.stop_motors()
 
   def stop_motors(self):
-    """stop all wheel motors"""
+    """Stop all wheel motors"""
     self.raspbot.Ctrl_Muto(0, 0)
     self.raspbot.Ctrl_Muto(1, 0)
     self.raspbot.Ctrl_Muto(2, 0)
     self.raspbot.Ctrl_Muto(3, 0)
 
   def turn_right(self, speed, duration):
-    """turn right for a duration of time"""
+    """Turn right for a duration of time"""
     self.raspbot.Ctrl_Muto(0, speed)
     self.raspbot.Ctrl_Muto(1, speed)
     self.raspbot.Ctrl_Muto(2, -speed)
@@ -110,7 +111,7 @@ class Robot():
     self.stop_motors()
 
   def turn_left(self, speed, duration):
-    """turn left for a duration of time"""
+    """Turn left for a duration of time"""
     self.raspbot.Ctrl_Muto(0, -speed)
     self.raspbot.Ctrl_Muto(1, -speed)
     self.raspbot.Ctrl_Muto(2, speed)
@@ -119,27 +120,27 @@ class Robot():
     self.stop_motors()
 
   def turn_right_degrees(self, speed, angle):
-    """turn right a number of degrees using the calibration table"""
+    """Turn right a number of degrees using the calibration table"""
     self.turn_right(speed, turn_time(speed, angle))
  
   def turn_left_degrees(self, speed, angle):
-    """turn left a number of degrees using the calibration table"""
+    """Turn left a number of degrees using the calibration table"""
     self.turn_left(speed, turn_time(speed, angle))
 
   # ------------- ultrasonic -------------
 
   def sonic_up(self):
-    """activate ultrasonic sensor"""
+    """Activate ultrasonic sensor"""
     self.raspbot.Ctrl_Ulatist_Switch(1)
     # give time to calibrate
     time.sleep(1)
 
   def sonic_down(self):
-    """deactivate ultrasonic sensor"""
+    """Deactivate ultrasonic sensor"""
     self.raspbot.Ctrl_Ulatist_Switch(0)
 
   def get_distance(self):
-    """measure distance in mm with ultrasonic sensor"""
+    """Measure distance in mm with ultrasonic sensor"""
     diss_H = self.raspbot.read_data_array(0x1b,1)[0]
     diss_L = self.raspbot.read_data_array(0x1a,1)[0]
     dis = diss_H<< 8 | diss_L
@@ -148,4 +149,5 @@ class Robot():
   # ------------- light sensor -------------
 
   def read_data_array(self):
+    """Read front light sensor"""
     return self.raspbot.read_data_array(0x0a, 1)
