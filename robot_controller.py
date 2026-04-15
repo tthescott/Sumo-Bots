@@ -133,3 +133,8 @@ class Robot():
     diss_L = self.raspbot.read_data_array(0x1a,1)[0]
     dis = diss_H<< 8 | diss_L
     return dis
+
+  # ------------- line sensor -------------
+
+  def read_data_array(self):
+    return self.raspbot.read_data_array(0x0a, 1)
