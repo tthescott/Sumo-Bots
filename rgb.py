@@ -1,6 +1,5 @@
 import time
 import board
-import busio
 import adafruit_tcs34725
 
 i2c = board.I2C()
@@ -8,7 +7,6 @@ i2c = board.I2C()
 sesnor = adafruit_tcs34725.TCS34725(i2c)
 sesnor.gain = 16
 sesnor.integration_time = 50
-# sesnor.led = False
 
 try:
   while True:
@@ -16,8 +14,8 @@ try:
     lux = sesnor.lux
     rgb = sesnor.color_rgb_bytes
 
-    print(f"Color Temp: {temp}K, Lux: {lux}, RGB: {rgb}")
     # print(sesnor.color_raw)
+    print(f"Temp: {temp}K, Lux: {lux}, RGB: {rgb}")
   
     if (rgb[0] > 2 * rgb[1] and rgb[0] > 2 * rgb[2]):
       print("red")
