@@ -127,6 +127,14 @@ class Robot():
     """Turn left a number of degrees using the calibration table"""
     self.turn_left(speed, turn_time(speed, angle))
 
+  def scan_left(self, speed, duration, distance):
+    """Turn left until the robot sees an object within the distance"""
+    while True:
+      self.turn_left(speed, duration)
+      time.sleep(.1)
+      if self.get_distance() <= distance:
+        return
+
   # ------------- ultrasonic -------------
 
   def sonic_up(self):
