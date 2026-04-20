@@ -12,6 +12,7 @@ signal.signal(signal.SIGINT, bot.stop_execution)
 
 # global variables
 cruise_speed = 60
+turn_speed = 40
 attack_speed = 160
 attack_distance = 300 # mm
 turn_duration = 0.3 # seconds
@@ -23,7 +24,7 @@ try:
 
   while bot.is_running():
     # scan for enemy
-    bot.scan_left(cruise_speed, turn_duration, attack_distance)
+    bot.scan_left_smooth(turn_speed, attack_distance)
 
     # attack them (tape simulated by time for now)
     bot.drive_forward_timed(attack_speed, 2)

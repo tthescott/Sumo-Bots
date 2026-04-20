@@ -1,6 +1,7 @@
 import sys
 import time
 import bisect
+import signal
 
 # tell python where Raspbot_Lib is
 sys.path.append('/usr/local/lib/python3.11/dist-packages')
@@ -45,22 +46,32 @@ def turn_time(speed, angle=90):
 class Robot():
 
   def __init__(self):
-    """Initialize raspbot object and set Robot.run = True"""
+    """Initialize raspbot object"""
     self.raspbot = Raspbot()
-    self.run = True
+    self._run = True
+
+    # for Ctrl+C from within a method (TODO: make functional)
+    signal.signal(signal.SIGINT, self.stop_execution)
   
   # ------------- execution -------------
   
   def stop_execution(self, sig, frame):
-    """Set Robot.run = False. Stop any execution loop contingent on bot.is_running()"""
-    self.run = False
+    """Set Robot._run = False. Stops any execution loop contingent on bot.is_running()"""
+    self._run = False
     print() # for terminal formatting
 
   def is_running(self):
-    """Return the value of Robot.run (initialized True)"""
-    return self.run
+    """Return the value of Robot._run (initialized True)"""
+    return self._run
 
   # ------------- movement -------------
+
+  def stop_motors(self):
+    """Stop all wheel motors"""
+    self.raspbot.Ctrl_Muto(0, 0)
+    self.raspbot.Ctrl_Muto(1, 0)
+    self.raspbot.Ctrl_Muto(2, 0)
+    self.raspbot.Ctrl_Muto(3, 0)
 
   def drive_forward_forever(self, speed):
     """Drive forward with no stop"""
@@ -94,14 +105,7 @@ class Robot():
     time.sleep(duration)
     self.stop_motors()
 
-  def stop_motors(self):
-    """Stop all wheel motors"""
-    self.raspbot.Ctrl_Muto(0, 0)
-    self.raspbot.Ctrl_Muto(1, 0)
-    self.raspbot.Ctrl_Muto(2, 0)
-    self.raspbot.Ctrl_Muto(3, 0)
-
-  def turn_right(self, speed, duration):
+  def turn_right_time(self, speed, duration):
     """Turn right for a duration of time"""
     self.raspbot.Ctrl_Muto(0, speed)
     self.raspbot.Ctrl_Muto(1, speed)
@@ -110,7 +114,7 @@ class Robot():
     time.sleep(duration)
     self.stop_motors()
 
-  def turn_left(self, speed, duration):
+  def turn_left_time(self, speed, duration):
     """Turn left for a duration of time"""
     self.raspbot.Ctrl_Muto(0, -speed)
     self.raspbot.Ctrl_Muto(1, -speed)
@@ -121,18 +125,35 @@ class Robot():
 
   def turn_right_degrees(self, speed, angle):
     """Turn right a number of degrees using the calibration table"""
-    self.turn_right(speed, turn_time(speed, angle))
+    self.turn_right_time(speed, turn_time(speed, angle))
  
   def turn_left_degrees(self, speed, angle):
     """Turn left a number of degrees using the calibration table"""
-    self.turn_left(speed, turn_time(speed, angle))
+    self.turn_left_time(speed, turn_time(speed, angle))
+  
+  def turn_left_forever(self, speed):
+    self.raspbot.Ctrl_Muto(0, -speed)
+    self.raspbot.Ctrl_Muto(1, -speed)
+    self.raspbot.Ctrl_Muto(2, speed)
+    self.raspbot.Ctrl_Muto(3, speed)
 
-  def scan_left(self, speed, duration, distance):
+  def scan_left_step(self, speed, duration, distance):
     """Turn left until the robot sees an object within the distance"""
     while True:
-      self.turn_left(speed, duration)
-      time.sleep(.1)
+      self.turn_left_time(speed, duration)
+      time.sleep(.2)
       if self.get_distance() <= distance:
+        return
+  
+  def scan_left_smooth(self, speed, distance):
+    """Turn left until the robot sees an object within the distance"""
+    self.turn_left_forever(speed)
+    while True:
+      # get distance every .1 second while turning
+      time.sleep(.2)
+      if self.get_distance() <= distance:
+        self.stop_motors()
+        time.sleep(.2)
         return
 
   # ------------- ultrasonic -------------
@@ -140,8 +161,7 @@ class Robot():
   def sonic_up(self):
     """Activate ultrasonic sensor"""
     self.raspbot.Ctrl_Ulatist_Switch(1)
-    # give time to calibrate
-    time.sleep(1)
+    time.sleep(1) # give time to calibrate
 
   def sonic_down(self):
     """Deactivate ultrasonic sensor"""

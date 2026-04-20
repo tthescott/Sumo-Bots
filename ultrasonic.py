@@ -26,9 +26,9 @@ try:
       # stop and turn left or right
       bot.stop_motors()
       if random.randint(0, 1) == 0:
-        bot.turn_right(speed, turn_duration)
+        bot.turn_right_time(speed, turn_duration)
       else:
-        bot.turn_left(speed, turn_duration)
+        bot.turn_left_time(speed, turn_duration)
 
 finally:
   # stop motors and ultrasonic
