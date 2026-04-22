@@ -41,7 +41,7 @@ def turn_time(speed, angle=90):
     t90 = TURN_TABLE[lo] + t * (TURN_TABLE[hi] - TURN_TABLE[lo])
   return round(t90 * angle / 90 * TURN_CORRECTION, 4)
 
-# --------------------------------------------
+# ----------------- Robot class -----------------
 
 class Robot():
 
@@ -49,9 +49,6 @@ class Robot():
     """Initialize raspbot object"""
     self.raspbot = Raspbot()
     self._run = True
-
-    # for Ctrl+C from within a method (TODO: make functional)
-    signal.signal(signal.SIGINT, self.stop_execution)
 
   # ------------- LEDs -------------
 
