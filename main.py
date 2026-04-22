@@ -12,13 +12,14 @@ signal.signal(signal.SIGINT, bot.stop_execution)
 
 # global variables
 cruise_speed = 60
-turn_speed = 40
+turn_speed = 30
 attack_speed = 160
-attack_distance = 300 # mm
-turn_duration = 0.3 # seconds
+attack_distance = 400 # mm
 
 # main loop
 try:
+  time.sleep(.1)
+
   # drive to black line (simulated for now)
   bot.drive_forward_timed(cruise_speed, 2)
 
@@ -27,9 +28,10 @@ try:
     bot.scan_left_smooth(turn_speed, attack_distance)
 
     # attack them (tape simulated by time for now)
-    bot.drive_forward_timed(attack_speed, 2)
+    bot.attack(attack_speed, 2)
 
 finally:
   # stop motors and ultrasonic
   bot.stop_motors()
   bot.sonic_down()
+  bot.turn_on_lights(0, 0)

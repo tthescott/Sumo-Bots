@@ -52,6 +52,10 @@ class Robot():
 
     # for Ctrl+C from within a method (TODO: make functional)
     signal.signal(signal.SIGINT, self.stop_execution)
+
+  def turn_on_lights(self, state:int, color:int):
+    """Control state and color of all LEDs"""
+    self.raspbot.Ctrl_WQ2812_ALL(state, color)
   
   # ------------- execution -------------
   
@@ -95,6 +99,19 @@ class Robot():
     self.raspbot.Ctrl_Muto(3, speed)
     time.sleep(duration)
     self.stop_motors()
+    time.sleep(.1)
+  
+  def attack(self, speed, duration):
+    """Kill"""
+    self.turn_on_lights(1, 0)
+    self.raspbot.Ctrl_Muto(0, speed)
+    self.raspbot.Ctrl_Muto(1, speed)
+    self.raspbot.Ctrl_Muto(2, speed)
+    self.raspbot.Ctrl_Muto(3, speed)
+    time.sleep(duration)
+    self.stop_motors()
+    self.turn_on_lights(0, 0)
+    time.sleep(.1)
 
   def drive_backward_timed(self, speed, duration):
     """Drive backward for a duration of time"""
@@ -150,10 +167,10 @@ class Robot():
     self.turn_left_forever(speed)
     while True:
       # get distance every .1 second while turning
-      time.sleep(.2)
+      time.sleep(.1)
       if self.get_distance() <= distance:
         self.stop_motors()
-        time.sleep(.2)
+        time.sleep(.1)
         return
 
   # ------------- ultrasonic -------------
