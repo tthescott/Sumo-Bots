@@ -25,13 +25,12 @@ try:
 
   while bot.is_running():
     # scan for enemy
-    bot.scan_left_smooth(turn_speed, attack_distance)
+    bot.scan_left(turn_speed, attack_distance)
 
     # attack them (tape simulated by time for now)
     bot.attack(attack_speed, 2)
 
 finally:
-  # stop motors and ultrasonic
   bot.stop_motors()
   bot.sonic_down()
-  bot.turn_on_lights(0, 0)
+  bot.LED_off()

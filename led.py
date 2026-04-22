@@ -13,17 +13,24 @@ speed = 160
 
 # main loop
 try:
-  bot.drive_forward_forever(speed)
   while bot.is_running():
-    bot.turn_on_lights(1, 0)
+    bot.LED_on("red")
     time.sleep(1)
-    bot.turn_on_lights(1, 1)
+    bot.LED_on("green")
     time.sleep(1)
-    bot.turn_on_lights(1, 2)
+    bot.LED_on("blue")
     time.sleep(1)
+    bot.LED_on("yellow")
+    time.sleep(1)
+    bot.LED_on("purple")
+    time.sleep(1)
+    bot.LED_on("cyan")
+    time.sleep(1)
+    bot.LED_on("white")
+    time.sleep(1)
+    bot.LED_on("violet")
 
 finally:
-  # stop motors and ultrasonic
   bot.stop_motors()
   bot.sonic_down()
-  bot.turn_on_lights(0, 0)
+  bot.LED_off()

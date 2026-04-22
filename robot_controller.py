@@ -53,9 +53,34 @@ class Robot():
     # for Ctrl+C from within a method (TODO: make functional)
     signal.signal(signal.SIGINT, self.stop_execution)
 
-  def turn_on_lights(self, state:int, color:int):
-    """Control state and color of all LEDs"""
-    self.raspbot.Ctrl_WQ2812_ALL(state, color)
+  # ------------- LEDs -------------
+
+  def LED_on(self, color:str):
+    """Turn on LEDs to given color\n
+    Possible values: red, green, blue, yellow, purple, cyan, white"""
+    match color:
+      case "red":
+        num = 0
+      case "green":
+        num = 1
+      case "blue":
+        num = 2
+      case "yellow":
+        num = 3
+      case "purple":
+        num = 4
+      case "cyan":
+        num = 5
+      case "white":
+        num = 6
+      case _:
+        print(f"{color} isn't a color")
+        return
+    self.raspbot.Ctrl_WQ2812_ALL(1, num)
+
+  def LED_off(self):
+    """Turn off LEDs"""
+    self.raspbot.Ctrl_WQ2812_ALL(0, 0)
   
   # ------------- execution -------------
   
@@ -84,13 +109,6 @@ class Robot():
     self.raspbot.Ctrl_Muto(2, speed)
     self.raspbot.Ctrl_Muto(3, speed)
 
-  def drive_backward_forever(self, speed):
-    """Drive backward with no stop"""
-    self.raspbot.Ctrl_Muto(0, -speed)
-    self.raspbot.Ctrl_Muto(1, -speed)
-    self.raspbot.Ctrl_Muto(2, -speed)
-    self.raspbot.Ctrl_Muto(3, -speed)
-
   def drive_forward_timed(self, speed, duration):
     """Drive forward for a duration of time"""
     self.raspbot.Ctrl_Muto(0, speed)
@@ -103,24 +121,15 @@ class Robot():
   
   def attack(self, speed, duration):
     """Kill"""
-    self.turn_on_lights(1, 0)
+    self.LED_on("red")
     self.raspbot.Ctrl_Muto(0, speed)
     self.raspbot.Ctrl_Muto(1, speed)
     self.raspbot.Ctrl_Muto(2, speed)
     self.raspbot.Ctrl_Muto(3, speed)
     time.sleep(duration)
     self.stop_motors()
-    self.turn_on_lights(0, 0)
+    self.LED_off()
     time.sleep(.1)
-
-  def drive_backward_timed(self, speed, duration):
-    """Drive backward for a duration of time"""
-    self.raspbot.Ctrl_Muto(0, -speed)
-    self.raspbot.Ctrl_Muto(1, -speed)
-    self.raspbot.Ctrl_Muto(2, -speed)
-    self.raspbot.Ctrl_Muto(3, -speed)
-    time.sleep(duration)
-    self.stop_motors()
 
   def turn_right_time(self, speed, duration):
     """Turn right for a duration of time"""
@@ -153,16 +162,8 @@ class Robot():
     self.raspbot.Ctrl_Muto(1, -speed)
     self.raspbot.Ctrl_Muto(2, speed)
     self.raspbot.Ctrl_Muto(3, speed)
-
-  def scan_left_step(self, speed, duration, distance):
-    """Turn left until the robot sees an object within the distance"""
-    while True:
-      self.turn_left_time(speed, duration)
-      time.sleep(.2)
-      if self.get_distance() <= distance:
-        return
   
-  def scan_left_smooth(self, speed, distance):
+  def scan_left(self, speed, distance):
     """Turn left until the robot sees an object within the distance"""
     self.turn_left_forever(speed)
     while True:
@@ -185,7 +186,7 @@ class Robot():
     self.raspbot.Ctrl_Ulatist_Switch(0)
 
   def get_distance(self):
-    """Measure distance in mm with ultrasonic sensor"""
+    """Return distance in mm with ultrasonic sensor"""
     diss_H = self.raspbot.read_data_array(0x1b,1)[0]
     diss_L = self.raspbot.read_data_array(0x1a,1)[0]
     dis = diss_H<< 8 | diss_L
@@ -194,5 +195,5 @@ class Robot():
   # ------------- light sensor -------------
 
   def read_data_array(self):
-    """Read front light sensor"""
+    """Return front light sensor data"""
     return self.raspbot.read_data_array(0x0a, 1)
