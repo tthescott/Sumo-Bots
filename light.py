@@ -17,14 +17,13 @@ try:
   while bot.is_running():
     # read light sensors every .05 seconds
     time.sleep(.05)
-    track = bot.read_data_array()
-    track = int(track[0])
-    x1 = (track>>3)&0x01
-    x2 = (track>>2)&0x01
-    x3 = (track>>1)&0x01
-    x4 = (track)&0x01
+    data = bot.read_data_array()
+    x1 = (data>>3)&0x01
+    x2 = (data>>2)&0x01
+    x3 = (data>>1)&0x01
+    x4 = (data)&0x01
 
-    print(track, x1, x2, x3, x4)
+    print(data, x1, x2, x3, x4)
     sum = x1 + x2 + x3 + x4
 
     # stop when any sensor reads black

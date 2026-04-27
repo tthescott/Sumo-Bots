@@ -11,9 +11,9 @@ bot.sonic_up()
 signal.signal(signal.SIGINT, bot.stop_execution)
 
 # global variables
-cruise_speed = 60
-turn_speed = 30
-attack_speed = 160
+cruise_speed = 50
+turn_speed = 10
+attack_speed = 100
 attack_distance = 400 # mm
 
 # main loop
