@@ -18,17 +18,27 @@ attack_distance = 400 # mm
 
 # main loop
 try:
-  time.sleep(.1)
+  # drive to edge
+  bot.drive_forward_forever(cruise_speed)
 
-  # drive to black line (simulated for now)
-  bot.drive_forward_timed(cruise_speed, 2)
+  # stop at edge
+  while True:
+    if bot.detect_tape():
+      bot.stop_motors()
+      break
 
   while bot.is_running():
-    # scan for enemy
-    bot.scan_left(turn_speed, attack_distance)
+    # go back a little bit
+    bot.drive_backward_timed(cruise_speed, 1)
 
-    # attack them (tape simulated by time for now)
-    bot.attack(attack_speed, 2)
+    # scan left or right for enemy
+    if random.randint(0, 1) == 0:
+      bot.scan_left(turn_speed, attack_distance)
+    else:
+      bot.scan_right(turn_speed, attack_distance)
+
+    # attack them
+    bot.attack(attack_speed)
 
 finally:
   bot.stop_motors()

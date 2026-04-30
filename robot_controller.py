@@ -108,41 +108,42 @@ class Robot():
 
   def drive_forward_timed(self, speed, duration):
     """Drive forward for a duration of time"""
-    self.raspbot.Ctrl_Muto(0, speed)
-    self.raspbot.Ctrl_Muto(1, speed)
-    self.raspbot.Ctrl_Muto(2, speed)
-    self.raspbot.Ctrl_Muto(3, speed)
+    self.drive_forward_forever(speed)
     time.sleep(duration)
     self.stop_motors()
     time.sleep(.1)
   
-  def attack(self, speed, duration):
-    """Kill"""
-    self.LED_on("red")
-    self.raspbot.Ctrl_Muto(0, speed)
-    self.raspbot.Ctrl_Muto(1, speed)
-    self.raspbot.Ctrl_Muto(2, speed)
-    self.raspbot.Ctrl_Muto(3, speed)
+  def drive_backward_timed(self, speed, duration):
+    """Drive forward for a duration of time"""
+    self.raspbot.Ctrl_Muto(0, -speed)
+    self.raspbot.Ctrl_Muto(1, -speed)
+    self.raspbot.Ctrl_Muto(2, -speed)
+    self.raspbot.Ctrl_Muto(3, -speed)
     time.sleep(duration)
     self.stop_motors()
-    self.LED_off()
     time.sleep(.1)
+  
+  def attack(self, speed):
+    """Kill (stops at tape)"""
+    self.LED_on("red")
+    self.drive_forward_forever(speed)
+
+    while True:
+      if self.detect_tape():
+        self.stop_motors()
+        self.LED_off()
+        time.sleep(.1)
+        return
 
   def turn_right_time(self, speed, duration):
     """Turn right for a duration of time"""
-    self.raspbot.Ctrl_Muto(0, speed)
-    self.raspbot.Ctrl_Muto(1, speed)
-    self.raspbot.Ctrl_Muto(2, -speed)
-    self.raspbot.Ctrl_Muto(3, -speed)
+    self.turn_right_forever(speed)
     time.sleep(duration)
     self.stop_motors()
 
   def turn_left_time(self, speed, duration):
     """Turn left for a duration of time"""
-    self.raspbot.Ctrl_Muto(0, -speed)
-    self.raspbot.Ctrl_Muto(1, -speed)
-    self.raspbot.Ctrl_Muto(2, speed)
-    self.raspbot.Ctrl_Muto(3, speed)
+    self.turn_left_forever(speed)
     time.sleep(duration)
     self.stop_motors()
 
@@ -160,9 +161,26 @@ class Robot():
     self.raspbot.Ctrl_Muto(2, speed)
     self.raspbot.Ctrl_Muto(3, speed)
   
+  def turn_right_forever(self, speed):
+    self.raspbot.Ctrl_Muto(0, speed)
+    self.raspbot.Ctrl_Muto(1, speed)
+    self.raspbot.Ctrl_Muto(2, -speed)
+    self.raspbot.Ctrl_Muto(3, -speed)
+  
   def scan_left(self, speed, distance):
     """Turn left until the robot sees an object within the distance"""
     self.turn_left_forever(speed)
+    while True:
+      # get distance every .1 second while turning
+      time.sleep(.1)
+      if self.get_distance() <= distance:
+        self.stop_motors()
+        time.sleep(.1)
+        return
+  
+  def scan_right(self, speed, distance):
+    """Turn left until the robot sees an object within the distance"""
+    self.turn_right_forever(speed)
     while True:
       # get distance every .1 second while turning
       time.sleep(.1)
@@ -206,7 +224,5 @@ class Robot():
 
     sum = x1 + x2 + x3 + x4
     if sum < 4:
-      self.stop_motors()
       return True
-
     return False
