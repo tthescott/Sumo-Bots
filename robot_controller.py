@@ -1,7 +1,6 @@
 import sys
 import time
 import bisect
-import signal
 
 # tell python where Raspbot_Lib is
 sys.path.append('/usr/local/lib/python3.11/dist-packages')
@@ -111,7 +110,6 @@ class Robot():
     self.drive_forward_forever(speed)
     time.sleep(duration)
     self.stop_motors()
-    time.sleep(.1)
   
   def drive_backward_timed(self, speed, duration):
     """Drive forward for a duration of time"""
@@ -121,18 +119,17 @@ class Robot():
     self.raspbot.Ctrl_Muto(3, -speed)
     time.sleep(duration)
     self.stop_motors()
-    time.sleep(.1)
   
-  def attack(self, speed):
-    """Kill (stops at tape)"""
+  def attack(self, speed, distance):
+    """Kill (stops if enemy is lost)"""
     self.LED_on("red")
     self.drive_forward_forever(speed)
 
+    # constantly check for enemy, stop if lost
     while True:
-      if self.detect_tape():
+      if self.get_distance() > distance:
         self.stop_motors()
         self.LED_off()
-        time.sleep(.1)
         return
 
   def turn_right_time(self, speed, duration):
@@ -171,22 +168,18 @@ class Robot():
     """Turn left until the robot sees an object within the distance"""
     self.turn_left_forever(speed)
     while True:
-      # get distance every .1 second while turning
-      time.sleep(.1)
+      # constantly get distance while turning
       if self.get_distance() <= distance:
         self.stop_motors()
-        time.sleep(.1)
         return
   
   def scan_right(self, speed, distance):
     """Turn left until the robot sees an object within the distance"""
     self.turn_right_forever(speed)
     while True:
-      # get distance every .1 second while turning
-      time.sleep(.1)
+      # constantly get distance while turning
       if self.get_distance() <= distance:
         self.stop_motors()
-        time.sleep(.1)
         return
 
   # ------------- ultrasonic -------------

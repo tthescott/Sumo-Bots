@@ -1,6 +1,5 @@
 import signal
 import random
-import time
 from robot_controller import Robot
 
 # initialize robot object
@@ -14,7 +13,7 @@ signal.signal(signal.SIGINT, bot.stop_execution)
 cruise_speed = 50
 turn_speed = 10
 attack_speed = 100
-attack_distance = 400 # mm
+attack_distance = 1000 # mm
 
 # main loop
 try:
@@ -38,7 +37,7 @@ try:
       bot.scan_right(turn_speed, attack_distance)
 
     # attack them
-    bot.attack(attack_speed)
+    bot.attack(attack_speed, attack_distance)
 
 finally:
   bot.stop_motors()
