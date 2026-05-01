@@ -10,7 +10,7 @@ bot.sonic_up()
 signal.signal(signal.SIGINT, bot.stop_execution)
 
 # global variables
-cruise_speed = 50
+cruise_speed = 40
 turn_speed = 10
 attack_speed = 100
 attack_distance = 1000 # mm
@@ -18,14 +18,7 @@ attack_distance = 1000 # mm
 # main loop
 try:
   # drive to edge
-  #bot.drive_forward_forever(cruise_speed)
-  bot.drive_forward_timed(cruise_speed, 2)
-
-  # stop at edge
-  # while True:
-  #   if bot.detect_tape():
-  #     bot.stop_motors()
-  #     break
+  bot.drive_forward_timed(cruise_speed, 1)
 
   while bot.is_running():
     # scan left or right for enemy
