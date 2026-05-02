@@ -112,7 +112,7 @@ class Robot():
     self.stop_motors()
   
   def drive_backward_timed(self, speed, duration):
-    """Drive forward for a duration of time"""
+    """Drive backward for a duration of time"""
     self.raspbot.Ctrl_Muto(0, -speed)
     self.raspbot.Ctrl_Muto(1, -speed)
     self.raspbot.Ctrl_Muto(2, -speed)
